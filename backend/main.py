@@ -2,8 +2,9 @@ import json
 import os
 from fastapi import FastAPI, UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
-from typing import Optional
 import google.generativeai as genai
+from typing import Optional
+file: UploadFile | None = File(None)
 
 app = FastAPI(title="GenQuiz Backend API")
 
@@ -17,7 +18,7 @@ app.add_middleware(
 
 # Explicitly use the provided API key
 genai.configure(api_key="AIzaSyCEQ1ZjPsLBQxNoH4ir-QaGW0CeGwI1JOA")
-model = genai.GenerativeModel('gemini-2.5-pro', generation_config={"response_mime_type": "application/json"})
+model = genai.GenerativeModel('gemini-2.5-flash', generation_config={"response_mime_type": "application/json"})
 
 @app.post("/api/generate-quiz")
 async def generate_quiz(
@@ -37,7 +38,8 @@ async def generate_quiz(
     sections_str = ", ".join(section_list)
 
     prompt = f"""You are the backend brain of an aptitude quiz application called GenQuiz.
-Your job is to generate highly dynamic quiz questions for placement assessments covering the requested sections: {sections_str}.
+Your job is to generate highly dynamic, real-world aptitude test questions. These should be modeled after actual corporate placement exams (like TCS, Infosys, Amazon, etc.) and standard competitive assessments.
+The questions must test practical problem-solving, critical thinking, and real-world application of concepts covering the requested sections: {sections_str}.
 
 Difficulty level requested: {difficulty}
 Please generate EXACTLY {count_per_section} questions for EACH requested section.
