@@ -17,7 +17,7 @@ app.add_middleware(
 )
 
 # Explicitly use the provided API key
-genai.configure(api_key="AIzaSyCEQ1ZjPsLBQxNoH4ir-QaGW0CeGwI1JOA")
+genai.configure(api_key="AIzaSyDeIka1N8Ib5yDx2hyPYFkQaJ04SWSMVWk")
 model = genai.GenerativeModel('gemini-2.5-flash', generation_config={"response_mime_type": "application/json"})
 
 @app.post("/api/generate-quiz")
