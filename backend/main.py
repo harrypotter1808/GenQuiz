@@ -16,8 +16,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Explicitly use the provided API key
-genai.configure(api_key="AIzaSyDeIka1N8Ib5yDx2hyPYFkQaJ04SWSMVWk")
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
+
+# Read the API key from the environment
+api_key = os.environ.get("GEMINI_API_KEY")
+if not api_key:
+    raise ValueError("GEMINI_API_KEY environment variable not set. Please check your .env file.")
+genai.configure(api_key=api_key)
 model = genai.GenerativeModel('gemini-2.5-flash', generation_config={"response_mime_type": "application/json"})
 
 @app.post("/api/generate-quiz")
@@ -79,7 +87,13 @@ Rules you must follow strictly:
             response = model.generate_content(prompt)
         
         output_text = response.text.strip()
-        quiz_data = json.loads(output_text)
+        if output_text.startswith("```json"):
+            output_text = output_text[7:]
+        elif output_text.startswith("```"):
+            output_text = output_text[3:]
+        if output_text.endswith("```"):
+            output_text = output_text[:-3]
+        quiz_data = json.loads(output_text.strip())
         return quiz_data
 
     except Exception as e:
