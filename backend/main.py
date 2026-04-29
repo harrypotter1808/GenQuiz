@@ -97,8 +97,9 @@ Rules you must follow strictly:
         return quiz_data
 
     except Exception as e:
-        print(f"Error generating quiz: {e}")
-        return {"error": "Failed to generate quiz from LLM. Check console."}
+        error_msg = str(e)
+        print(f"Error generating quiz: {error_msg}")
+        return {"error": error_msg}
 
 if __name__ == "__main__":
     import uvicorn
